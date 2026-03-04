@@ -2,6 +2,7 @@ package br.com.arca.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Period;
 
 public class Embaixador {
     private long id;
@@ -79,15 +80,13 @@ public class Embaixador {
     //Setters
 
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public void setNome(String nome) {
+
         this.nome = nome;
     }
 
     public void setDataNascimento(LocalDate dataNascimento) {
+
         this.dataNascimento = dataNascimento;
     }
 
@@ -121,8 +120,9 @@ public class Embaixador {
         }
 
         if(pontos < 0){
-            throw new IllegalArgumentException("Pontos nÃ£o podem ser negativos.");
+            throw new IllegalArgumentException("Pontos não podem ser negativos.");
         }
+
         RegistroPontos registro = new RegistroPontos(semana, pontos);
 
         historicoPontos.add(registro);
@@ -131,7 +131,7 @@ public class Embaixador {
     public void registrarFrequencia(LocalDate data, boolean presente){
 
         if(data == null){
-            throw new IllegalArgumentException("Data da frequÃªncia Ã© obrigatÃ³ria!");
+            throw new IllegalArgumentException("Data da frequência é obrigatória!");
         }
 
         for (RegistroFrequencia f : frequencias){
@@ -142,6 +142,86 @@ public class Embaixador {
         RegistroFrequencia registro = new RegistroFrequencia(data, presente);
 
         frequencias.add(registro);
+    }
+
+    public int calcularPontos(){
+        int totalPontos = 0;
+
+        if(historicoPontos == null){
+            return 0;
+        }
+
+        for(RegistroPontos f : historicoPontos){
+            totalPontos = totalPontos + f.getPontos();
+        }
+
+        return totalPontos;
+    }
+
+    public double calcularPercentualFrequencia(){
+        int totalRegistros = frequencias.size();
+
+        if(totalRegistros == 0){
+            return 0.0;
+        }
+        int presentes = 0;
+
+        for(RegistroFrequencia f : frequencias){
+            if(f.isPresente() == true){
+                presentes += 1;
+            }
+        }
+
+        return Math.round((presentes * 100.0) / totalRegistros * 100.0) / 100.0;
+
+    }
+
+    public int calcularIdade(){
+        if(dataNascimento == null){
+            throw new IllegalArgumentException("Data de nascimento não pode ser nula.");
+        }
+
+        if(dataNascimento.isAfter(LocalDate.now())){
+            throw new IllegalArgumentException("Data de nascimento não pode ser futura.");
+        }
+
+        int idade = Period.between(dataNascimento, LocalDate.now()).getYears();
+        return idade;
+
+    }
+
+    public String exibirPerfil(){
+        int idade = calcularIdade();
+        double freqPercent = calcularPercentualFrequencia();
+        int pontos = calcularPontos();
+
+        return """
+                ===== DADOS PESSOAIS =====
+                Nome: %s
+                ID: %d
+                Idade: %d
+                Telefone: %s
+                Ano Ingresso: %d
+                Total de Pontos: %d
+                Percentual de Frequência: %.2f
+                Quantidade de Registros (pontos): %d
+                Quantidade de Registros (frequência): %d
+                
+                
+                """.formatted(
+                        this.nome,
+                        this.id,
+                        idade,
+                        this.telefone,
+                        this.anoIngresso,
+                        pontos,
+                        freqPercent,
+                        this.historicoPontos.size(),
+                        this.frequencias.size()
+
+
+        );
+
     }
 }
 
