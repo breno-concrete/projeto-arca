@@ -20,6 +20,15 @@ public class RegistroFrequencia {
         return presente;
     }
 
+
+    public void setData(LocalDate data) {
+        this.data = data;
+    }
+
+    public void setPresente(boolean presente) {
+        this.presente = presente;
+    }
+
     @Override
     public String toString() {
         return "Data: " + data +

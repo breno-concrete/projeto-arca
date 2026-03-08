@@ -14,6 +14,18 @@ public class RegistroPontos {
 
     }
 
+    public void setSemana(String semana) {
+        this.semana = semana;
+    }
+
+    public void setPontos(int pontos) {
+        this.pontos = pontos;
+    }
+
+    public void setDataRegistro(LocalDate dataRegistro) {
+        this.dataRegistro = dataRegistro;
+    }
+
     public String getSemana() {
         return semana;
     }

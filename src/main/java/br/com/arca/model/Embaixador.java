@@ -80,6 +80,18 @@ public class Embaixador {
     //Setters
 
 
+    public void setHistoricoPontos(List<RegistroPontos> historicoPontos) {
+        this.historicoPontos = (historicoPontos == null) ? new ArrayList<>() : new ArrayList<>(historicoPontos);
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setFrequencias(List<RegistroFrequencia> frequencias) {
+        this.frequencias = (frequencias == null) ? new ArrayList<>() : new ArrayList<>(frequencias);
+    }
+
     public void setNome(String nome) {
 
         this.nome = nome;
