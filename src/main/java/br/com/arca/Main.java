@@ -253,10 +253,6 @@ public class Main {
         return null;
     }
 
-    private static void verDadosEmbaixador(List<Embaixador> embaixadores, Scanner scan) {
-        System.out.println("Visualizacao de dados: sera implementado no proximo passo.");
-    }
-
     private static void lancamentoSemanal(List<Embaixador> embaixadores, Scanner scan) {
         if (embaixadores.isEmpty()) {
             System.out.println("Nao ha embaixadores cadastrados.");
@@ -265,11 +261,12 @@ public class Main {
         System.out.print("Semana de referencia (ex: 2026-S10): ");
         String semana = scan.nextLine().trim();
 
+        LocalDate dataFrequencia = lerData(scan, "Data da frequencia (yyyy-MM-dd): ");
+
         for (Embaixador embaixador : embaixadores) {
             System.out.println(embaixador.getNome());
 
             int pontos = lerInteiro(scan, "Pontos da semana: ");
-            LocalDate dataFrequencia = lerData(scan, "Data da frequencia (yyyy-MM-dd): ");
             boolean presente = lerPresenca(scan);
 
             try {
@@ -291,6 +288,39 @@ public class Main {
             if (entrada.equals("N")) return false;
 
             System.out.println("Entrada invalida. Digite S ou N.");
+        }
+    }
+
+    private static void verDadosEmbaixador(List<Embaixador> embaixadores, Scanner scan) {
+        if (embaixadores.isEmpty()) {
+            System.out.println("Nao ha embaixadores cadastrados.");
+            return;
+        }
+
+        listarEmbaixadores(embaixadores);
+        long id = lerInteiro(scan, "ID do embaixador para visualizar: ");
+        Embaixador embaixador = buscarPorId(embaixadores, id);
+
+        if (embaixador == null) {
+            System.out.println("Embaixador nao encontrado.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println(embaixador.exibirPerfil());
+
+        System.out.println("=== HISTORICO DE PONTOS ===");
+        if (embaixador.getHistoricoPontos().isEmpty()) {
+            System.out.println("Sem registros de pontos.");
+        } else {
+            embaixador.getHistoricoPontos().forEach(System.out::println);
+        }
+
+        System.out.println("=== HISTORICO DE FREQUENCIA ===");
+        if (embaixador.getFrequencias().isEmpty()) {
+            System.out.println("Sem registros de frequencia.");
+        } else {
+            embaixador.getFrequencias().forEach(System.out::println);
         }
     }
 }
