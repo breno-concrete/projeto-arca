@@ -18,6 +18,12 @@ public class Embaixador {
 
     //Construtor
 
+    public Embaixador(){
+        this.historicoPontos = new ArrayList<>();
+        this.frequencias = new ArrayList<>();
+
+    }
+
     public Embaixador(long id, String nome, LocalDate dataNascimento, String telefone, String pai, String mae, String telefoneResp, int anoIngresso) {
         this.id = id;
         this.nome = nome;

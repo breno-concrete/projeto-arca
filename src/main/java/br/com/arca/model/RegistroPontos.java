@@ -6,6 +6,10 @@ public class RegistroPontos {
     private int pontos;
     private LocalDate dataRegistro;
 
+
+    public RegistroPontos(){
+
+    }
     public RegistroPontos(String semana, int pontos){
         this.semana = semana;
         this.pontos = pontos;

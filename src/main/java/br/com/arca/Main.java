@@ -1,6 +1,8 @@
 package br.com.arca;
 
 import br.com.arca.model.Embaixador;
+import br.com.arca.repository.EmbaixadorRepositoryJson;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,18 @@ public class Main {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         List<Embaixador> embaixadores = new ArrayList<>();
+        EmbaixadorRepositoryJson repo = new EmbaixadorRepositoryJson();
+
+        //deserialização
+        try{
+            embaixadores = repo.carregar();
+        } catch (RuntimeException e) {
+            System.out.println("Falha ao carregar dados: " + e.getMessage());
+        }
+
+
+
+
 
         int opcao = -1;
         while (opcao != 0) {
@@ -20,8 +34,8 @@ public class Main {
             opcao = lerOpcao(scan);
 
             switch (opcao) {
-                case 1 -> menuCrud(embaixadores, scan);
-                case 2 -> lancamentoSemanal(embaixadores, scan);
+                case 1 -> menuCrud(embaixadores, scan, repo);
+                case 2 -> lancamentoSemanal(embaixadores, scan, repo);
                 case 3 -> verDadosEmbaixador(embaixadores, scan);
                 case 0 -> System.out.println("Encerrando sistema...");
                 default -> System.out.println("Opcao invalida. Tente novamente.");
@@ -56,7 +70,7 @@ public class Main {
         }
     }
 
-    private static void menuCrud(List<Embaixador> embaixadores, Scanner scan) {
+    private static void menuCrud(List<Embaixador> embaixadores, Scanner scan, EmbaixadorRepositoryJson repo) {
         int opcaoCrud = -1;
 
         while (opcaoCrud != 0) {
@@ -72,10 +86,10 @@ public class Main {
             opcaoCrud = lerOpcao(scan);
 
             switch (opcaoCrud) {
-                case 1 -> cadastrarEmbaixador(embaixadores, scan);
+                case 1 -> cadastrarEmbaixador(embaixadores, scan, repo);
                 case 2 -> listarEmbaixadores(embaixadores);
-                case 3 -> editarEmbaixador(embaixadores, scan);
-                case 4 -> removerEmbaixador(embaixadores, scan);
+                case 3 -> editarEmbaixador(embaixadores, scan, repo);
+                case 4 -> removerEmbaixador(embaixadores, scan, repo);
                 case 0 -> System.out.println("Voltando ao menu principal...");
                 default -> System.out.println("Opcao invalida.");
             }
@@ -84,7 +98,7 @@ public class Main {
         }
     }
 
-    private static void cadastrarEmbaixador(List<Embaixador> embaixadores, Scanner scan) {
+    private static void cadastrarEmbaixador(List<Embaixador> embaixadores, Scanner scan, EmbaixadorRepositoryJson repo) {
         System.out.println("=== Cadastro de Embaixador ===");
 
         long id = proximoId(embaixadores);
@@ -114,6 +128,12 @@ public class Main {
 
         embaixadores.add(novo);
         System.out.println("Embaixador cadastrado com sucesso. ID: " + id);
+
+        try{
+            repo.salvar(embaixadores);
+        } catch(RuntimeException e){
+            System.out.println("Erro ao salvar dados: " + e.getMessage());
+        }
 
     }
 
@@ -167,7 +187,7 @@ public class Main {
         }
     }
 
-    private static void editarEmbaixador(List<Embaixador> embaixadores, Scanner scan) {
+    private static void editarEmbaixador(List<Embaixador> embaixadores, Scanner scan, EmbaixadorRepositoryJson repo) {
         if (embaixadores.isEmpty()) {
             System.out.println("Nao ha embaixadores cadastrados.");
             return;
@@ -221,10 +241,15 @@ public class Main {
             }
         }
 
+        try{
+            repo.salvar(embaixadores);
+        } catch(RuntimeException e){
+            System.out.println("Erro ao salvar dados: " + e.getMessage());
+        }
         System.out.println("Embaixador atualizado com sucesso.");
     }
 
-    private static void removerEmbaixador(List<Embaixador> embaixadores, Scanner scan) {
+    private static void removerEmbaixador(List<Embaixador> embaixadores, Scanner scan, EmbaixadorRepositoryJson repo) {
         listarEmbaixadores(embaixadores);
 
         if (embaixadores.isEmpty()) {
@@ -241,6 +266,11 @@ public class Main {
         }
 
         embaixadores.remove(embaixador);
+        try{
+            repo.salvar(embaixadores);
+        } catch(RuntimeException e){
+            System.out.println("Erro ao salvar dados: " + e.getMessage());
+        }
         System.out.println("Embaixador removido com sucesso.");
     }
 
@@ -253,7 +283,7 @@ public class Main {
         return null;
     }
 
-    private static void lancamentoSemanal(List<Embaixador> embaixadores, Scanner scan) {
+    private static void lancamentoSemanal(List<Embaixador> embaixadores, Scanner scan, EmbaixadorRepositoryJson repo) {
         if (embaixadores.isEmpty()) {
             System.out.println("Nao ha embaixadores cadastrados.");
             return;
@@ -276,6 +306,12 @@ public class Main {
             } catch (IllegalArgumentException ex) {
                 System.out.println("Erro ao registrar lancamento: " + ex.getMessage());
             }
+        }
+
+        try{
+            repo.salvar(embaixadores);
+        } catch(RuntimeException e){
+            System.out.println("Erro ao salvar dados: " + e.getMessage());
         }
     }
 

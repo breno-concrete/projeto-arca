@@ -7,6 +7,11 @@ public class RegistroFrequencia {
     private LocalDate data;
     private boolean presente;
 
+    public RegistroFrequencia(){
+
+    }
+
+
     public RegistroFrequencia(LocalDate data, boolean presente) {
         this.data = data;
         this.presente = presente;
