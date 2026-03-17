@@ -51,7 +51,7 @@ public class Main {
     private static void exibirMenuPrincipal() {
         System.out.println("""
                 ===== INTERFACE A.R.C.A =====
-                1 - CRUD DE EMBAIXADORES
+                1 - ATUALIZAR DADOS
                 2 - LANCAMENTO SEMANAL (PONTOS + FREQUENCIA)
                 3 - VER DADOS DE UM EMBAIXADOR
                 0 - SAIR
@@ -70,16 +70,48 @@ public class Main {
         }
     }
 
+    private static void adicionarProva(List<Embaixador> embaixadores, Scanner scan, EmbaixadorRepositoryJson repo) {
+
+        if (embaixadores.isEmpty()) {
+            System.out.println("Nao ha embaixadores cadastrados.");
+            return;
+        }
+
+        listarEmbaixadores(embaixadores);
+
+        long id = lerInteiro(scan, "ID do embaixador: ");
+        Embaixador embaixador = buscarPorId(embaixadores, id);
+
+        if (embaixador == null) {
+            System.out.println("Embaixador nao encontrado.");
+            return;
+        }
+
+        System.out.print("Nome da prova: ");
+        String prova = scan.nextLine();
+
+        embaixador.getProvas().add(prova);
+
+        try {
+            repo.salvar(embaixadores);
+            System.out.println("Prova adicionada com sucesso.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao salvar dados: " + e.getMessage());
+        }
+    }
+
+
     private static void menuCrud(List<Embaixador> embaixadores, Scanner scan, EmbaixadorRepositoryJson repo) {
         int opcaoCrud = -1;
 
         while (opcaoCrud != 0) {
             System.out.println("""
-                ===== CRUD DE EMBAIXADORES =====
+                ===== RELATÓRIO DE EMBAIXADORES =====
                 1 - Cadastrar
                 2 - Listar
                 3 - Editar
                 4 - Remover
+                5 - Adicionar Prova
                 0 - Voltar
                 """);
 
@@ -90,6 +122,7 @@ public class Main {
                 case 2 -> listarEmbaixadores(embaixadores);
                 case 3 -> editarEmbaixador(embaixadores, scan, repo);
                 case 4 -> removerEmbaixador(embaixadores, scan, repo);
+                case 5 -> adicionarProva(embaixadores, scan, repo);
                 case 0 -> System.out.println("Voltando ao menu principal...");
                 default -> System.out.println("Opcao invalida.");
             }
@@ -357,6 +390,14 @@ public class Main {
             System.out.println("Sem registros de frequencia.");
         } else {
             embaixador.getFrequencias().forEach(System.out::println);
+        }
+
+        System.out.println("=== PROVAS ===");
+
+        if (embaixador.getProvas().isEmpty()) {
+            System.out.println("Sem provas registradas.");
+        } else {
+            embaixador.getProvas().forEach(System.out::println);
         }
     }
 }
